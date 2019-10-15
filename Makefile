@@ -1,9 +1,20 @@
+# ==== INITIALIZATION ==========================================================
+ifeq ($(OS), Windows_NT)
+	OS_NAME := Windows
+else
+	OS_NAME := $(shell uname)
+endif
+
 # ==== COMPILER FLAGS ==========================================================
 GNU := g++
 LFLAGS := -g -Ofast -Wall
 RFLAGS :=
 INCLUDES := 
 LIBRARIES := 
+ifeq ($(OS_NAME), Windows)
+	INCLUDES += c:/path/to/sfml/include/
+	LIBRARIES += c:/path/to/sfml/lib/
+endif
 LINKS := sfml-graphics \
 		 sfml-window \
 		 sfml-system \
@@ -12,14 +23,15 @@ LINKS := sfml-graphics \
 NAME := snake
 PATH_SRC := ./src/
 PATH_OBJ := ./obj/
-OBJS := main
+SRC := main
 ADD := 
 
 # ==== APPLY SETUP =============================================================
-OBJSO := $(addsuffix .o, $(OBJS))
-OBJSF := $(addprefix $(PATH_OBJ), $(OBJSO))
-ADDO := $(addsuffix .o, $(ADD))
-ADDF := $(addprefix $(PATH_OBJ), $(ADDO))
+
+SRC0 := $(addsuffix .cc, $(SRC))
+SRCF := $(addprefix $(PATH_SRC), $(SRC0))
+ADD0 := $(addsuffix .o, $(ADD))
+ADDF := $(addprefix $(PATH_OBJ), $(ADD0))
 INCLUDES := $(addprefix -I , $(INCLUDES))
 LIBRARIES := $(addprefix -L , $(LIBRARIES))
 LINKS := $(addprefix -l, $(LINKS))
@@ -29,8 +41,8 @@ LIBFLAGS := $(LINKS) $(LIBRARIES) $(INCLUDES)
 process: builder
 
 # ==== SUB-PROCESS =============================================================
-builder: $(OBJSF)
-	$(GNU) $(LFLAGS) -o $(NAME) $^ $(ADDF) $(LIBFLAGS) $(RFLAGS)
+builder: 
+	$(GNU) $(LFLAGS) -o $(NAME) $(SRCF) $(ADDF) $(LIBFLAGS) $(RFLAGS)
 
-$(PATH_OBJ)%.o: $(PATH_SRC)%.cc
-	$(GNU) $(LFLAGS) -o $@ -c $< $(LIBFLAGS) $(RFLAGS)
+clearobj:
+	$(RM) $(PATH_OBJ)%.o

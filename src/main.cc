@@ -134,6 +134,7 @@ public:
         }
     }
     void setDirection(int up, int right) {
+        if (pause) { return; }
         directionUp = up;
         directionRight = right;
     }
@@ -223,21 +224,20 @@ int main()
                 case sf::Event::KeyReleased: S=false; goto k;
                 case sf::Event::KeyPressed: S=true; k: switch(event.key.code) 
                 {
-                    case sf::Keyboard::Escape: if (!S) { game.switchPause(); }
-                    case sf::Keyboard::Return: if (game.isGameOver()) { game.restart(); }
+                    case sf::Keyboard::Escape: if (!S) { game.switchPause(); } break;
+                    case sf::Keyboard::Return: if (game.isGameOver()) { game.restart(); } break;
                     case sf::Keyboard::Z: goto up;
                     case sf::Keyboard::Q: goto left;
                     case sf::Keyboard::S: goto down;
                     case sf::Keyboard::D: goto right;
-                    case sf::Keyboard::Up: up: up=1; break;
-                    case sf::Keyboard::Left: left: right=-1; break;
-                    case sf::Keyboard::Down: down: up=-1; break;
-                    case sf::Keyboard::Right: right: right=1; break;
+                    case sf::Keyboard::Up: up: up=1; goto m;
+                    case sf::Keyboard::Left: left: right=-1; goto m;
+                    case sf::Keyboard::Down: down: up=-1; goto m; 
+                    case sf::Keyboard::Right: right: right=1; m: game.setDirection(up, right); break;
                     default: break;
                 }
                 default: break;
             }
-            if (S) { game.setDirection(up, right); }
         }
         if (!game.isGameOver()) { game.update(); } 
         game.draw(window);
