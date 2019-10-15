@@ -11,10 +11,6 @@ LFLAGS := -g -Ofast -Wall
 RFLAGS :=
 INCLUDES := 
 LIBRARIES := 
-ifeq ($(OS_NAME), Windows)
-	INCLUDES += d:/sw/SFML/include/
-	LIBRARIES += d:/sw/SFML/lib/
-endif
 LINKS := sfml-graphics \
 		 sfml-window \
 		 sfml-system \
@@ -24,10 +20,16 @@ NAME := snake
 PATH_SRC := ./src/
 PATH_OBJ := ./obj/
 SRC := main
-ADD := icon
+ADD := 
+
+# ==== WINDOWS SETUP ===========================================================
+ifeq ($(OS_NAME), Windows)
+	INCLUDES += d:/sw/SFML/include/
+	LIBRARIES += d:/sw/SFML/lib/
+	ADD += icon
+endif
 
 # ==== APPLY SETUP =============================================================
-
 SRC0 := $(addsuffix .cc, $(SRC))
 SRCF := $(addprefix $(PATH_SRC), $(SRC0))
 ADD0 := $(addsuffix .o, $(ADD))
