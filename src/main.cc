@@ -131,6 +131,7 @@ public:
         }
         for (size_t i = 1; i < snake.size(); i++) {
             if (snake[0].getp().compare(snake[i].getp())) {
+                setGameOver();
                 break;
             }
         }
@@ -148,6 +149,18 @@ public:
         }
         window.draw(score);
         window.display();
+    }
+    void restart() {
+        pause = false;
+        gameOver = false;
+        directionUp = 0;
+        directionRight = 0;
+        scorePoints = 0;
+        score.setFillColor(sf::Color::White);
+        updateScore();
+        snake.clear();
+        spawnApple();
+        spawnSnake();
     }
 };
 
@@ -168,23 +181,28 @@ int main()
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) { window.close(); }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                game.switchPause();
-                break;
+            bool S={};
+            int up=0, right=0;
+            switch (event.type) {
+                case sf::Event::Closed: window.close(); break;
+                case sf::Event::KeyReleased: S=false; goto k;
+                case sf::Event::KeyPressed: S=true; k: switch(event.key.code) 
+                {
+                    case sf::Keyboard::Escape: if (!S) { game.switchPause(); }
+                    case sf::Keyboard::Enter: if (game.isGameOver()) { game.restart(); }
+                    case sf::Keyboard::Z: goto up;
+                    case sf::Keyboard::Q: goto left;
+                    case sf::Keyboard::S: goto down;
+                    case sf::Keyboard::D: goto right;
+                    case sf::Keyboard::Up: up: up=1; break;
+                    case sf::Keyboard::Left: left: right=-1; break;
+                    case sf::Keyboard::Down: down: up=-1; break;
+                    case sf::Keyboard::Right: right: right=1; break;
+                    default: break;
+                }
+                default: break;
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-                game.setDirection(1, 0);
-            }
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-                game.setDirection(0, -1);
-            }
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-                game.setDirection(-1, 0);
-            }
-            else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-                game.setDirection(0, 1);
-            }
+            if (S) { game.setDirection(up, right); }
         }
         if (!game.isGameOver()) { game.update(); } 
         game.draw(window);
