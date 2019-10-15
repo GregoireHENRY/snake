@@ -1,5 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <string>
+#include <fstream>
 
 const int MAX_WIDTH_SCREEN = 1024;
 const int MAX_HEIGHT_SCREEN = 768;
@@ -9,6 +11,22 @@ const int MAX_HEIGHT = MAX_HEIGHT_SCREEN / PIXEL_SIZE;
 const sf::Vector2f PIXEL(PIXEL_SIZE, PIXEL_SIZE);
 const sf::Color ENTITY_COLOR[2] = {sf::Color::White, sf::Color::Red};
 sf::Font FONT;
+
+int readHighestScore() {
+    std::string score;
+    std::ifstream file("resource/HighestScore.txt", std::ios::in);
+    file >> score;
+    file.close();
+    return stoi(score);
+}
+
+void writeHighestScore(int highestScorePoints) {
+    char highestScore[21];
+    sprintf(highestScore, "%d", highestScorePoints);
+    std::ofstream file("resource/HighestScore.txt", std::ios::trunc);
+    file << highestScore;
+    file.close();
+}
 
 class Point {
 private:
@@ -25,8 +43,8 @@ public:
         y = oth.y;
     }
     void updateRandom() {
-        x = std::rand() % (MAX_WIDTH-1) + 1;
-        y = std::rand() % (MAX_HEIGHT-1) + 1;
+        x = std::rand() % (MAX_WIDTH-2) + 1;
+        y = std::rand() % (MAX_HEIGHT-2) + 1;
     }
     void move(int up, int right) {
         y -= up;
@@ -69,23 +87,39 @@ private:
     bool gameOver = false;
     int directionUp = 0;
     int directionRight = 0;
-    int scorePoints = 0;
-    sf::Text score;
+    int scorePoints = 0, highestScorePoints = 0;
+    sf::Text score, highestScore;
     Point grid[MAX_WIDTH][MAX_HEIGHT];
     std::vector <Entity> snake;
     Entity apple;
 public:
     Game() {
-        score.setCharacterSize(20);
+        highestScorePoints = readHighestScore();
+        char highestScoreStr[50];
+        sprintf(highestScoreStr, "HIGHEST SCORE: %d", highestScorePoints);
+        highestScore.setString(highestScoreStr);
+        highestScore.setCharacterSize(16);
+        highestScore.setFont(FONT);
+        highestScore.setFillColor(sf::Color::White);
+        highestScore.setPosition(700, 30);
+        score.setCharacterSize(16);
         score.setFont(FONT);
         score.setFillColor(sf::Color::White);
-        score.setPosition(800, 50);
+        score.setPosition(700, 60);
     }
     bool isGameOver() const { return gameOver; }
     void switchPause() { pause = !pause; }
     void setGameOver() {
         gameOver = true;
         score.setFillColor(sf::Color::Red);
+        if (scorePoints > highestScorePoints) {
+            highestScorePoints = scorePoints;
+            writeHighestScore(highestScorePoints);
+            char highestScoreStr[50];
+            sprintf(highestScoreStr, "HIGHEST SCORE: %d", highestScorePoints);
+            highestScore.setString(highestScoreStr);
+            score.setFillColor(sf::Color::Green);
+        }
     }
     void spawnApple() {
         apple.spawn(1);
@@ -147,6 +181,7 @@ public:
         for (auto& entity : snake) {
             entity.draw(window);
         }
+        window.draw(highestScore);
         window.draw(score);
         window.display();
     }
@@ -189,7 +224,7 @@ int main()
                 case sf::Event::KeyPressed: S=true; k: switch(event.key.code) 
                 {
                     case sf::Keyboard::Escape: if (!S) { game.switchPause(); }
-                    case sf::Keyboard::Enter: if (game.isGameOver()) { game.restart(); }
+                    case sf::Keyboard::Return: if (game.isGameOver()) { game.restart(); }
                     case sf::Keyboard::Z: goto up;
                     case sf::Keyboard::Q: goto left;
                     case sf::Keyboard::S: goto down;

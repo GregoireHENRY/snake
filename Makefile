@@ -2,12 +2,12 @@
 GNU := g++
 LFLAGS := -g -Ofast -Wall
 RFLAGS :=
-INCLUDES := d:/sw/SFML/include 
-LIBRARIES := d:/sw/SFML/lib
+INCLUDES := 
+LIBRARIES := 
 LINKS := sfml-graphics \
-		 sfml-audio \
 		 sfml-window \
-		 sfml-system 
+		 sfml-system \
+		 sfml-audio
 # ==== PROJECT FILES ===========================================================
 NAME := snake
 PATH_SRC := ./src/
