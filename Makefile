@@ -15,10 +15,11 @@ LINK := sfml-graphics \
 		sfml-window \
 		sfml-system \
 		sfml-audio
-# ==== PROJECT FOLDERS =========================================================
+# ==== DEFAULT PROJECT FOLDERS =================================================
 NAME := snake
 PATH_SRC := src/
 PATH_RESOURCE := resource/
+PREF_LINK := -l
 SRC := main
 ADD := 
 
@@ -27,17 +28,19 @@ ifeq ($(OS_NAME), Windows)
     GNU := wincompiler/bin/g++.exe
 	INCLUDE := wingfx/include/
 	LIBRARY := wingfx/lib/
+	LINK := $(addsuffix .a, $(LINK))
+	PREF_LINK := $(LIBRARY)lib
 	ADD += icon
 endif
 
 # ==== APPLY SETUP =============================================================
-SRC0 := $(addsuffix .cc, $(SRC))
-SRCF := $(addprefix $(PATH_SRC), $(SRC0))
-ADD0 := $(addsuffix .o, $(ADD))
-ADDF := $(addprefix $(PATH_RESOURCE), $(ADD0))
+SRC := $(addsuffix .cc, $(SRC))
+SRC := $(addprefix $(PATH_SRC), $(SRC))
+ADD := $(addsuffix .o, $(ADD))
+ADD := $(addprefix $(PATH_RESOURCE), $(ADD))
 INCLUDE := $(addprefix -I , $(INCLUDE))
 LIBRARY := $(addprefix -L , $(LIBRARIE))
-LINK := $(addprefix -l, $(LINK))
+LINK := $(addprefix $(PREF_LINK), $(LINK))
 LIBFLAG := $(LINK) $(LIBRARY) $(INCLUDE)
 
 # ==== PROCESS =================================================================
@@ -45,4 +48,4 @@ process: builder
 
 # ==== SUB-PROCESS =============================================================
 builder: 
-	$(GNU) $(LFLAG) -o $(NAME) $(SRCF) $(ADDF) $(LIBFLAG) $(RFLAG)
+	$(GNU) $(LFLAG) -o $(NAME) $(SRC) $(ADD) $(LIBFLAG) $(RFLAG)
