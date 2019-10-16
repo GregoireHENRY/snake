@@ -30,7 +30,7 @@ ifeq ($(OS_NAME), Windows)
 	LIBRARY := wingfx/lib/
 	LINK := $(addsuffix .a, $(LINK))
 	PREF_LINK := $(LIBRARY)lib
-	ADD += icon
+	ADD := icon
 endif
 
 # ==== APPLY SETUP =============================================================
