@@ -18,7 +18,7 @@ LINKS := sfml-graphics \
 # ==== PROJECT FILES ===========================================================
 NAME := snake
 PATH_SRC := ./src/
-PATH_OBJ := ./obj/
+PATH_RESOURCE := ./resource/
 SRC := main
 ADD := 
 
@@ -33,7 +33,7 @@ endif
 SRC0 := $(addsuffix .cc, $(SRC))
 SRCF := $(addprefix $(PATH_SRC), $(SRC0))
 ADD0 := $(addsuffix .o, $(ADD))
-ADDF := $(addprefix $(PATH_OBJ), $(ADD0))
+ADDF := $(addprefix $(PATH_RESOURCE), $(ADD0))
 INCLUDES := $(addprefix -I , $(INCLUDES))
 LIBRARIES := $(addprefix -L , $(LIBRARIES))
 LINKS := $(addprefix -l, $(LINKS))
@@ -45,6 +45,3 @@ process: builder
 # ==== SUB-PROCESS =============================================================
 builder: 
 	$(GNU) $(LFLAGS) -o $(NAME) $(SRCF) $(ADDF) $(LIBFLAGS) $(RFLAGS)
-
-clearobj:
-	$(RM) $(PATH_OBJ)%.o
