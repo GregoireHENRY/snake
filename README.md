@@ -1,5 +1,6 @@
 # snake
 ![](/resource/img.jpg)
+
 A multi-platform SNAKE game coded on C++/SFML
 
 ## Installation
