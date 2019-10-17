@@ -12,4 +12,4 @@ printf "Compiling\n"
 make
 printf "\n"
 
-printf "Finished succesfully!\n"
+printf "Installation completed succesfully!\n"

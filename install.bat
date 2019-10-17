@@ -1,5 +1,5 @@
 @echo off
-echo SNAKE builder
+echo == SNAKE builder ==
 echo.
 
 echo Initializing SFML
@@ -14,4 +14,4 @@ echo Compiling
 wincompiler\bin\mingw32-make 
 echo.
 
-echo Installation finished succesfully!
+echo Installation completed succesfully!
