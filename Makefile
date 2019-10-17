@@ -9,12 +9,12 @@ endif
 GNU := g++
 LFLAG := -g -Ofast -Wall
 RFLAG :=
-INCLUDE := wingfx/include/
-LIBRARY := wingfx/lib/
-LINK := sfml-graphics.a \
-		sfml-window.a \
-		sfml-system.a \
-		sfml-audio.a
+INCLUDE := 
+LIBRARY := 
+LINK := sfml-graphics \
+		sfml-window \
+		sfml-system \
+		sfml-audio
 # ==== PROJECT FOLDERS =========================================================
 NAME := snake
 PATH_SRC := src/
@@ -25,6 +25,8 @@ ADD :=
 # ==== WINDOWS SETUP ===========================================================
 ifeq ($(OS_NAME), Windows)
     GNU := wincompiler/bin/g++.exe
+	INCLUDE := wingfx/include/
+	LIBRARY := wingfx/lib/
 	ADD += icon
 endif
 
@@ -35,7 +37,7 @@ ADD0 := $(addsuffix .o, $(ADD))
 ADDF := $(addprefix $(PATH_RESOURCE), $(ADD0))
 INCLUDE := $(addprefix -I , $(INCLUDE))
 LIBRARY := $(addprefix -L , $(LIBRARIE))
-LINK := $(addprefix wingfx/lib/lib, $(LINK))
+LINK := $(addprefix -l, $(LINK))
 LIBFLAG := $(LINK) $(LIBRARY) $(INCLUDE)
 
 # ==== PROCESS =================================================================
